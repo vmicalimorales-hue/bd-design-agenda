@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Agenda</title>
+  <style>
+    :root{
+      --ink:#1a1a1a; --soft:#5c5c5c; --muted:#9a948b;
+      --paper:#ffffff; --canvas:#f1efea; --hair:#e7e3dc;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--canvas); color:var(--ink);
+      font-family:'Helvetica Neue', Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      display:flex; min-height:100vh; align-items:center; justify-content:center;
+      padding:32px 16px;
+    }
+    main{
+      background:var(--paper); max-width:640px; width:100%;
+      padding:64px 48px; text-align:center;
+    }
+    .brand{font-size:12px; letter-spacing:7px; font-weight:600;}
+    .rule{width:36px; height:1px; background:var(--ink); margin:22px auto;}
+    h1{font-size:34px; font-weight:200; letter-spacing:1.5px; margin:0;}
+    .tagline{
+      font-size:11px; color:var(--muted); letter-spacing:2.5px;
+      text-transform:uppercase; margin-top:12px;
+    }
+    p.welcome{
+      font-size:15px; color:var(--soft); line-height:1.7;
+      max-width:480px; margin:28px auto 0;
+    }
+    footer{
+      margin-top:40px; padding-top:20px; border-top:1px solid var(--hair);
+      font-size:10px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand">BD BARCELONA</div>
+    <div class="rule"></div>
+    <h1>Design Agenda</h1>
+    <div class="tagline">Worldwide furniture &amp; interiors events</div>
+    <p class="welcome">
+      Welcome to the BD Barcelona Design Agenda — a living calendar of the
+      furniture, interiors and collectible-design events that matter most to our
+      sales teams around the world. This page is the home of the project and will
+      soon host the full interactive agenda.
+    </p>
+    <footer>Market Research &middot; BD Barcelona</footer>
+  </main>
+</body>
+</html>
