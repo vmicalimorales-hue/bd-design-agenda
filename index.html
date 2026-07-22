@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Design Agenda — BD Barcelona</title>
+  <title>Market Research — BD Barcelona</title>
   <style>
     :root{
       --ink:#1a1a1a; --soft:#5c5c5c; --muted:#9a948b;
@@ -19,48 +19,57 @@
       padding:32px 16px;
     }
     main{
-      background:var(--paper); max-width:720px; width:100%;
-      padding:72px 56px 64px; text-align:center;
+      background:var(--paper); max-width:780px; width:100%;
+      padding:66px 56px 56px; text-align:center;
     }
     .logo{width:60px; height:60px; display:inline-block}
     .brand{font-size:12px; letter-spacing:7px; font-weight:600; margin-top:12px}
     .rule{width:36px; height:1px; background:var(--ink); margin:26px auto}
-    h1{font-size:44px; font-weight:200; letter-spacing:1.5px; margin:0; line-height:1.05}
+    h1{font-size:40px; font-weight:200; letter-spacing:1.5px; margin:0; line-height:1.05}
     .tagline{
       font-size:11px; color:var(--muted); letter-spacing:2.5px;
       text-transform:uppercase; margin-top:14px;
     }
     p.intro{
-      font-size:15.5px; color:var(--soft); line-height:1.8;
-      max-width:540px; margin:32px auto 0;
+      font-size:15px; color:var(--soft); line-height:1.8;
+      max-width:560px; margin:30px auto 0;
     }
-    .stats{
-      display:flex; justify-content:center; gap:38px; flex-wrap:wrap;
-      margin:40px auto 4px; padding:24px 0;
-      border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
-      max-width:540px;
+    .tools{
+      display:grid; grid-template-columns:1fr 1fr; gap:22px;
+      margin:46px auto 0; text-align:left;
     }
-    .stat .n{font-size:26px; font-weight:300; letter-spacing:.5px}
-    .stat .l{
-      font-size:10px; color:var(--muted); letter-spacing:1.5px;
-      text-transform:uppercase; margin-top:5px;
+    .tool{
+      border:1px solid var(--hair); padding:30px 28px 26px;
+      display:flex; flex-direction:column; transition:border-color .15s;
     }
-    .cta{
-      display:inline-block; margin-top:44px;
-      background:var(--ink); color:#fff; text-decoration:none;
-      font-size:13px; letter-spacing:2px; text-transform:uppercase; font-weight:600;
-      padding:17px 42px; transition:opacity .15s;
+    .tool:hover{border-color:var(--muted)}
+    .tool .kicker{
+      font-size:9.5px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--muted); font-weight:600;
     }
-    .cta:hover{opacity:.82}
-    .cta .arrow{margin-left:10px}
+    .tool h2{font-size:23px; font-weight:200; letter-spacing:.6px; margin:12px 0 0; line-height:1.2}
+    .tool p{font-size:13px; color:var(--soft); line-height:1.75; margin:14px 0 0; flex:1}
+    .tool .figs{
+      display:flex; gap:22px; margin:20px 0 0; padding-top:16px;
+      border-top:1px solid var(--hair);
+    }
+    .tool .figs div{font-size:10px; color:var(--muted); letter-spacing:1.2px; text-transform:uppercase}
+    .tool .figs b{display:block; font-size:19px; font-weight:300; color:var(--ink); letter-spacing:.4px; margin-bottom:3px}
+    .tool a{
+      display:block; margin-top:22px; background:var(--ink); color:#fff;
+      text-decoration:none; font-size:12px; letter-spacing:2px;
+      text-transform:uppercase; font-weight:600; padding:15px 10px;
+      text-align:center; transition:opacity .15s;
+    }
+    .tool a:hover{opacity:.82}
     footer{
-      margin-top:46px; font-size:10px; color:var(--muted);
+      margin-top:44px; font-size:10px; color:var(--muted);
       letter-spacing:1px; text-transform:uppercase; line-height:1.8;
     }
-    @media (max-width:560px){
-      main{padding:52px 26px 48px}
-      h1{font-size:34px}
-      .stats{gap:24px}
+    @media (max-width:640px){
+      main{padding:48px 24px 44px}
+      h1{font-size:31px}
+      .tools{grid-template-columns:1fr; gap:18px}
     }
   </style>
 </head>
@@ -69,25 +78,45 @@
     <img class="logo" src="bd_logo.png" alt="BD Barcelona">
     <div class="brand">BD BARCELONA</div>
     <div class="rule"></div>
-    <h1>Design Agenda</h1>
-    <div class="tagline">Worldwide furniture &amp; interiors events</div>
+    <h1>Market Research</h1>
+    <div class="tagline">Tools for the sales teams</div>
 
     <p class="intro">
-      A living, worldwide calendar of the design events that matter most to our
-      sales teams — trade fairs, design weeks, collectible-design fairs and
-      contract &amp; hospitality shows. Events are grouped by sales region so each
-      area manager can focus on their own market, with the highest-opportunity
-      dates flagged with a&nbsp;<strong>&#9733;</strong>. Every entry is verified on
-      official sources and the agenda is refreshed each month.
+      Two living documents, both grouped by sales region and both refreshed on a
+      regular cadence. One tells you <em>where our market will be</em>; the other tells
+      you <em>what our accounts are building right now</em>. Every entry is verified
+      against official sources, and the highest-opportunity ones are flagged
+      with a&nbsp;<strong>&#9733;</strong>.
     </p>
 
-    <div class="stats">
-      <div class="stat"><div class="n">130+</div><div class="l">Events</div></div>
-      <div class="stat"><div class="n">7</div><div class="l">Regions</div></div>
-      <div class="stat"><div class="n">Monthly</div><div class="l">Updated</div></div>
-    </div>
+    <div class="tools">
+      <div class="tool">
+        <div class="kicker">Where the market is</div>
+        <h2>Design Agenda</h2>
+        <p>A worldwide calendar of the events that matter to us — trade fairs,
+           design weeks, collectible-design fairs and contract &amp; hospitality shows.</p>
+        <div class="figs">
+          <div><b>130+</b>Events</div>
+          <div><b>7</b>Regions</div>
+          <div><b>Monthly</b>Updated</div>
+        </div>
+        <a href="agenda.html">Open the agenda &rarr;</a>
+      </div>
 
-    <a class="cta" href="agenda.html">Let's get started <span class="arrow">&rarr;</span></a>
+      <div class="tool">
+        <div class="kicker">What they are building</div>
+        <h2>Active Projects Radar</h2>
+        <p>The live pipeline of the studios already in our database — hotels,
+           residences, restaurants and retail in progress, each with the fit for
+           BD and a way back into the conversation.</p>
+        <div class="figs">
+          <div><b>439</b>Projects</div>
+          <div><b>304</b>Studios</div>
+          <div><b>7</b>Regions</div>
+        </div>
+        <a href="projects.html">Open the radar &rarr;</a>
+      </div>
+    </div>
 
     <footer>Market Research &middot; BD Barcelona</footer>
   </main>
