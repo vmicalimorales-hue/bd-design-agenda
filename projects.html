@@ -118,7 +118,10 @@
     <div class="filtrow"><span class="flabel">Stage</span><span id="fstatus"></span></div>
     <div class="filtrow">
       <span class="chip" id="fstar">&#9733; Attack now</span>
-      <span class="chip" id="fgroup">Group by studio</span>
+      <span class="flabel" style="margin-left:10px">Group by</span>
+      <span class="chip" id="gstage">Stage</span>
+      <span class="chip" id="gregion">Region</span>
+      <span class="chip" id="fgroup">Studio</span>
       <span class="chip" id="freset">Reset</span></div>
     <div class="count" id="count"></div>
   </div>
@@ -147,7 +150,7 @@ const DATA = [{"idx": 511, "studio": "Atelier Nini Andrade Silva", "region": "Me
 const LISTED = [];
 const REGIONS = ["Mediterranean", "Northern Europe", "North America", "Latin America", "Middle East", "Africa", "Asia-Pacific", "Unassigned"];
 
-const S = {q:'', region:null, type:null, status:null, star:false, byStudio:false};
+const S = {q:'', region:null, type:null, status:null, star:false, byStudio:false, groupBy:null};
 const norm = s => (s||'').toString().toLowerCase();
 function uniq(f){ return [...new Set(DATA.map(f).filter(Boolean))]; }
 
@@ -230,12 +233,18 @@ function render(){
     ' · ' + new Set(rows.map(r => r.studio)).size + ' studios';
 
   const byPhase = DATA.some(d => d.phase);
-  const keyOf = d => S.byStudio ? d.studio : (byPhase ? PHASE_LABEL[d.phase] : d.region);
+  const mode = S.byStudio ? 'studio' : (S.groupBy || (byPhase ? 'stage' : 'region'));
+  const keyOf = d => mode === 'studio' ? d.studio
+                   : mode === 'region' ? d.region
+                   : PHASE_LABEL[d.phase] || d.status;
   const groups = {};
   rows.forEach(d => { (groups[keyOf(d)] = groups[keyOf(d)] || []).push(d); });
-  const keys = S.byStudio
+  const keys = mode === 'studio'
     ? Object.keys(groups).sort((a,b) => a.localeCompare(b))
-    : (byPhase ? STAGE_ORDER.filter(s => groups[s]) : REGIONS.filter(r => groups[r]));
+    : mode === 'region' ? REGIONS.filter(r => groups[r])
+    : STAGE_ORDER.filter(s => groups[s]);
+  document.getElementById('gstage').classList.toggle('on', mode === 'stage');
+  document.getElementById('gregion').classList.toggle('on', mode === 'region');
 
   document.getElementById('index').innerHTML = keys.length
     ? keys.map(k => `<a href="#g-${encodeURIComponent(k)}">${esc(k)}<span class="n">${groups[k].length}</span></a>`).join('')
@@ -279,9 +288,11 @@ const stageVals = DATA.some(d => d.phase)
 chips('fstatus', stageVals, 'status');
 document.getElementById('q').oninput = e => { S.q = norm(e.target.value).trim(); render(); };
 document.getElementById('fstar').onclick  = () => { S.star = !S.star; render(); };
-document.getElementById('fgroup').onclick = () => { S.byStudio = !S.byStudio; render(); };
+document.getElementById('fgroup').onclick = () => { S.byStudio = !S.byStudio; S.groupBy = null; render(); };
+document.getElementById('gstage').onclick  = () => { S.groupBy = 'stage';  S.byStudio = false; render(); };
+document.getElementById('gregion').onclick = () => { S.groupBy = 'region'; S.byStudio = false; render(); };
 document.getElementById('freset').onclick = () => {
-  Object.assign(S, {q:'', region:null, type:null, status:null, star:false, byStudio:false});
+  Object.assign(S, {q:'', region:null, type:null, status:null, star:false, byStudio:false, groupBy:null});
   document.getElementById('q').value = ''; render();
 };
 render();
