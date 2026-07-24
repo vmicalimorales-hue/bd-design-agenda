@@ -58,6 +58,7 @@
        border:1px solid var(--hair);color:var(--soft);border-radius:2px}
   .tag.status{border-color:var(--ink);color:var(--ink)}
   .tag.low{border-color:#c9a227;color:#8a6d0b}
+  .tag.newlead{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
   .tag.phase{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
   .tag.grade{border-color:var(--ink);color:var(--ink);font-weight:600}
   .window{border-left:2px solid var(--ink);padding-left:14px;margin-top:14px;
@@ -177,7 +178,8 @@ function match(d){
 
 function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-const PHASE_LABEL = {design:'Design phase', construction:'In construction', late:'Opening soon'};
+const PHASE_LABEL = {design:'Design phase', construction:'In construction', late:'Opening soon',
+                     'in construction':'In construction', 'opening soon':'Opening soon'};
 
 function card(d){
   const tags = [];
@@ -187,6 +189,9 @@ function card(d){
   if (!d.phase && d.status) tags.push(`<span class="tag status">${esc(d.status)}</span>`);
   if (d.date && d.date !== 'not confirmed') tags.push(`<span class="tag">${esc(d.date)}</span>`);
   if (d.brand) tags.push(`<span class="tag">${esc(d.brand)}</span>`);
+  if (d.crm === 'new') tags.push(`<span class="tag newlead">New lead</span>`);
+  else if (d.crm === 'in CRM') tags.push(`<span class="tag">Already in CRM</span>`);
+  else if (d.crm === 'unknown designer') tags.push(`<span class="tag low">Designer not published</span>`);
   if (d.confidence === 'low') tags.push(`<span class="tag low">unconfirmed</span>`);
   const links = [];
   if (d.source) links.push(`<a href="${esc(d.source)}" target="_blank" rel="noopener">Source</a>`);
@@ -202,6 +207,8 @@ function card(d){
     <div class="meta">${tags.join('')}</div>
     ${d.phase_note ? `<div class="window">${esc(d.phase_note)}</div>` : ''}
     ${d.city_country ? `<div class="row"><b>Where</b>${esc(d.city_country)}</div>` : ''}
+    ${d.architect ? `<div class="row"><b>Architect</b>${esc(d.architect)}</div>` : ''}
+    ${d.owner_dev ? `<div class="row"><b>Owner / developer</b>${esc(d.owner_dev)}</div>` : ''}
     ${d.fit  ? `<div class="row"><b>BD fit</b>${esc(d.fit)}</div>` : ''}
     ${d.hook ? `<div class="row hook"><b>Way in</b>${esc(d.hook)}</div>` : ''}
     ${d.trap ? `<div class="trap"><b>Watch out</b>${esc(d.trap)}</div>` : ''}
