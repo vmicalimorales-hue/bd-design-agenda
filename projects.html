@@ -59,6 +59,9 @@
   .tag.status{border-color:var(--ink);color:var(--ink)}
   .tag.low{border-color:#c9a227;color:#8a6d0b}
   .tag.newlead{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+  .tag.spec{border-color:#1a1a1a;color:#1a1a1a;font-weight:600}
+  .tag.spec.inhouse{background:#5c5c5c;color:#fff;border-color:#5c5c5c}
+  .tag.spec.tbc{border-color:#9a948b;color:#9a948b}
   .tag.phase{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
   .tag.grade{border-color:var(--ink);color:var(--ink);font-weight:600}
   .window{border-left:2px solid var(--ink);padding-left:14px;margin-top:14px;
@@ -121,6 +124,7 @@
       <span class="flabel" style="margin-left:10px">Group by</span>
       <span class="chip" id="gstage">Stage</span>
       <span class="chip" id="gregion">Region</span>
+      <span class="chip" id="gspec">Specifier</span>
       <span class="chip" id="fgroup">Studio</span>
       <span class="chip" id="freset">Reset</span></div>
     <div class="count" id="count"></div>
@@ -181,11 +185,14 @@ function match(d){
 
 function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+const SPEC_LABEL = {external:'External studio', 'in-house':'Brand in-house team', unpublished:'Designer not appointed'};
+const SPEC_CLASS = {external:'', 'in-house':'inhouse', unpublished:'tbc'};
 const PHASE_LABEL = {design:'Design phase', construction:'In construction', late:'Opening soon',
                      'in construction':'In construction', 'opening soon':'Opening soon'};
 
 function card(d){
   const tags = [];
+  if (d.specifier) tags.push(`<span class="tag spec ${SPEC_CLASS[d.specifier]||''}">${esc(SPEC_LABEL[d.specifier]||d.specifier)}</span>`);
   if (d.phase) tags.push(`<span class="tag phase">${esc(PHASE_LABEL[d.phase] || d.phase)}</span>`);
   if (d.grade) tags.push(`<span class="tag grade">${d.grade === 'A' ? 'Attack now' : 'Cultivate'}</span>`);
   if (d.typology) tags.push(`<span class="tag">${esc(d.typology)}</span>`);
@@ -209,6 +216,7 @@ function card(d){
     <p class="proj">${esc(d.project)}</p>
     <div class="meta">${tags.join('')}</div>
     ${d.phase_note ? `<div class="window">${esc(d.phase_note)}</div>` : ''}
+    ${d.specifier_note ? `<div class="row"><b>Who specifies</b>${esc(d.specifier_note)}</div>` : ''}
     ${d.city_country ? `<div class="row"><b>Where</b>${esc(d.city_country)}</div>` : ''}
     ${d.architect ? `<div class="row"><b>Architect</b>${esc(d.architect)}</div>` : ''}
     ${d.owner_dev ? `<div class="row"><b>Owner / developer</b>${esc(d.owner_dev)}</div>` : ''}
@@ -234,17 +242,21 @@ function render(){
 
   const byPhase = DATA.some(d => d.phase);
   const mode = S.byStudio ? 'studio' : (S.groupBy || (byPhase ? 'stage' : 'region'));
+  const SPEC_KEYS = ['external','in-house','unpublished'];
   const keyOf = d => mode === 'studio' ? d.studio
                    : mode === 'region' ? d.region
+                   : mode === 'spec' ? (SPEC_LABEL[d.specifier]||d.specifier)
                    : PHASE_LABEL[d.phase] || d.status;
   const groups = {};
   rows.forEach(d => { (groups[keyOf(d)] = groups[keyOf(d)] || []).push(d); });
   const keys = mode === 'studio'
     ? Object.keys(groups).sort((a,b) => a.localeCompare(b))
     : mode === 'region' ? REGIONS.filter(r => groups[r])
+    : mode === 'spec' ? SPEC_KEYS.map(k => SPEC_LABEL[k]).filter(x => groups[x])
     : STAGE_ORDER.filter(s => groups[s]);
   document.getElementById('gstage').classList.toggle('on', mode === 'stage');
   document.getElementById('gregion').classList.toggle('on', mode === 'region');
+  { const g = document.getElementById('gspec'); if (g) g.classList.toggle('on', mode === 'spec'); }
 
   document.getElementById('index').innerHTML = keys.length
     ? keys.map(k => `<a href="#g-${encodeURIComponent(k)}">${esc(k)}<span class="n">${groups[k].length}</span></a>`).join('')
@@ -291,10 +303,12 @@ document.getElementById('fstar').onclick  = () => { S.star = !S.star; render(); 
 document.getElementById('fgroup').onclick = () => { S.byStudio = !S.byStudio; S.groupBy = null; render(); };
 document.getElementById('gstage').onclick  = () => { S.groupBy = 'stage';  S.byStudio = false; render(); };
 document.getElementById('gregion').onclick = () => { S.groupBy = 'region'; S.byStudio = false; render(); };
+{ const g = document.getElementById('gspec'); if (g) g.onclick = () => { S.groupBy = 'spec'; S.byStudio = false; render(); }; }
 document.getElementById('freset').onclick = () => {
   Object.assign(S, {q:'', region:null, type:null, status:null, star:false, byStudio:false, groupBy:null});
   document.getElementById('q').value = ''; render();
 };
+if (!DATA.some(d => d.specifier)) { const g = document.getElementById('gspec'); if (g) g.style.display='none'; }
 render();
 </script>
 </body></html>
