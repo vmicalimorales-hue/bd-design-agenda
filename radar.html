@@ -135,20 +135,7 @@
       <span class="chip" id="gregion">Region</span>
       <span class="chip" id="gspec">Specifier</span>
       <span class="chip" id="fgroup">Studio</span>
-      <span class="chip" id="freset">Reset</span></div>
-    <div class="filtrow">
-      <span class="flabel">Source</span>
-      <span class="chip" id="fsrclead">Our accounts</span>
-      <span class="chip" id="fsrcpros">Prospects</span>
-      <span class="flabel" style="margin-left:10px">Evidence</span>
-      <span class="chip" id="fconf">Confirmed only</span>
-      <span class="chip" id="funconf">Unconfirmed only</span>
-      <span class="chip" id="fpend">Pending verification</span>
-      <span class="chip" id="fchg">Changed this update</span>
-      <span class="chip" id="fdate">Date unverified</span>
-      <span class="flabel" style="margin-left:10px">Last contact</span>
-      <span class="chip" id="fc90">Within 90 days</span>
-      <span class="chip" id="fcold">Cold (&gt;90d or never)</span>
+      <span class="chip" id="freset">Reset</span>
       <span class="chip" id="fcsv" style="margin-left:10px">&#8595; Export this view (CSV)</span>
       <span class="chip" id="fprint">Print / PDF</span></div>
     <div class="count" id="count"></div>
@@ -304,7 +291,7 @@ function card(d){
   if (d.date_risk === 'no date') tags.push(`<span class="tag low">DATE UNVERIFIED</span>`);
   if (d.date_risk === 'old') tags.push(`<span class="tag low">COVERAGE PRE-2025</span>`);
   if (d.stale_coverage) tags.push(`<span class="tag low">STALE COVERAGE${d.coverage_year ? ' ' + d.coverage_year : ''}</span>`);
-  if (d.in_crm === false) tags.push(`<span class="tag low">NO LONGER IN CRM</span>`);
+  if (d.in_crm === false && d.source_type === 'lead') tags.push(`<span class="tag low">NO LONGER IN CRM</span>`);
   if ((d.history||[]).some(h => h.field === 'status' || h.field === 'phase'))
     tags.push(`<span class="tag newlead">STATUS CHANGED</span>`);
   const links = [];
