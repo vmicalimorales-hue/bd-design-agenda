@@ -47,6 +47,10 @@
   .index a{display:inline-block;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
            color:var(--soft);text-decoration:none;margin:0 16px 8px 0;border-bottom:1px solid transparent}
   .index a:hover{color:var(--ink);border-bottom-color:var(--ink)}
+  .index a.tab{cursor:pointer;border:1px solid var(--hair);border-bottom:1px solid var(--hair);
+               padding:7px 14px;margin-right:6px}
+  .index a.tab.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+  .index a.tab.on .n{color:#bbb}
   .index .n{color:var(--muted);font-size:9px;margin-left:4px}
   .body{padding:10px 44px 50px}
   .grouphead{font-size:11px;letter-spacing:4px;text-transform:uppercase;font-weight:600;
@@ -130,10 +134,6 @@
 
   <div class="controls">
     <input class="search" id="q" placeholder="Search studio, project, city, typology&hellip;" autocomplete="off">
-    <div class="filtrow"><span class="flabel" data-i18n="focus">Focus markets</span>
-      <span class="chip focuschip" id="fna" data-i18n="na">North America</span>
-      <span class="chip focuschip" id="flon" data-i18n="lon">London</span>
-      <span class="chip focuschip" id="fger" data-i18n="ger">Germany</span></div>
     <div class="filtrow"><span class="flabel" data-i18n="region">Region</span><span id="fregion"></span></div>
     <div class="filtrow"><span class="flabel" data-i18n="type">Type</span><span id="ftype"></span></div>
     <div class="filtrow"><span class="flabel" data-i18n="stage">Stage</span><span id="fstatus"></span></div>
@@ -207,7 +207,7 @@ function download(name, text){
 /* ---- estado de filtros en el hash, para compartir la vista ------------ */
 let HASH_LOCK = false;
 const HKEYS = ['q','region','type','status','star','newOnly','byStudio','groupBy',
-               'srcLead','srcPros','conf','unconf','pend','chg','c90','cold','drisk','fm'];
+               'srcLead','srcPros','conf','unconf','pend','chg','c90','cold','drisk','fm','tab'];
 function writeHash(){
   if (HASH_LOCK) return;
   const p = [];
@@ -297,7 +297,7 @@ en:{last_updated:'Last updated', sub:'Live pipeline of our existing accounts',
     b_acct:'Our account', b_unconf:'unconfirmed', b_notconf:'NOT CONFIRMED',
     b_pend:'PENDING VERIFICATION', b_nodate:'DATE UNVERIFIED', b_old:'COVERAGE PRE-2025',
     b_stale:'STALE COVERAGE', b_nocrm:'NO LONGER IN CRM', b_changed:'STATUS CHANGED',
-    b_attack:'Attack now', b_cult:'Cultivate', src:'Source',
+    b_attack:'Attack now', b_cult:'Cultivate', src:'Source', tab_all:'All',
     foot:'BD Barcelona — Active Projects Radar. Companion to the Design Agenda.<br>Every project carries a source link; open it before you write. Entries marked <em>unconfirmed</em> are press mentions we could not verify on the studio\'s own channels — treat them as a lead, not a fact. A studio with no project listed means we found nothing published, not that nothing is happening.<br><strong>What is on this page:</strong> only projects currently in concept, design, construction, fit-out, or about to specify furniture — the stages where BD can still be written into the schedule. Delivered and cancelled projects are removed and kept in the archive, not on the board.'},
 es:{last_updated:'Última actualización', sub:'Pipeline vivo de nuestras cuentas',
     search_ph:'Buscar estudio, proyecto, ciudad, tipología…',
@@ -317,7 +317,7 @@ es:{last_updated:'Última actualización', sub:'Pipeline vivo de nuestras cuenta
     b_acct:'Cuenta nuestra', b_unconf:'sin confirmar', b_notconf:'NO CONFIRMADO',
     b_pend:'PENDIENTE DE VERIFICAR', b_nodate:'FECHA SIN VERIFICAR', b_old:'COBERTURA PRE-2025',
     b_stale:'COBERTURA CADUCADA', b_nocrm:'YA NO ESTÁ EN EL CRM', b_changed:'CAMBIO DE ESTADO',
-    b_attack:'Atacar ya', b_cult:'Cultivar', src:'Fuente',
+    b_attack:'Atacar ya', b_cult:'Cultivar', src:'Fuente', tab_all:'Todos',
     foot:'BD Barcelona — Active Projects Radar. Complemento de la Design Agenda.<br>Cada proyecto lleva su enlace a la fuente; ábrelo antes de escribir. Lo marcado <em>sin confirmar</em> son menciones de prensa que no pudimos verificar en los canales del propio estudio — trátalo como pista, no como hecho. Un estudio sin proyecto listado significa que no encontramos nada publicado, no que no esté pasando nada.<br><strong>Qué hay en esta página:</strong> solo proyectos actualmente en concepción, diseño, construcción, acabados o a punto de elegir mobiliario — las fases donde BD todavía puede entrar en el schedule. Lo entregado y lo cancelado se retira y se conserva en el archivo, no en el tablero.'},
 ca:{last_updated:'Darrera actualització', sub:'Pipeline viu dels nostres comptes',
     search_ph:'Cerca estudi, projecte, ciutat, tipologia…',
@@ -337,7 +337,7 @@ ca:{last_updated:'Darrera actualització', sub:'Pipeline viu dels nostres compte
     b_acct:'Compte nostre', b_unconf:'sense confirmar', b_notconf:'NO CONFIRMAT',
     b_pend:'PENDENT DE VERIFICAR', b_nodate:'DATA SENSE VERIFICAR', b_old:'COBERTURA PRE-2025',
     b_stale:'COBERTURA CADUCADA', b_nocrm:'JA NO ÉS AL CRM', b_changed:'CANVI D’ESTAT',
-    b_attack:'Ataca ja', b_cult:'Cultiva', src:'Font',
+    b_attack:'Ataca ja', b_cult:'Cultiva', src:'Font', tab_all:'Tots',
     foot:'BD Barcelona — Active Projects Radar. Complement de la Design Agenda.<br>Cada projecte porta el seu enllaç a la font; obre\'l abans d\'escriure. El que està marcat <em>sense confirmar</em> són mencions de premsa que no vam poder verificar als canals del mateix estudi — tracta-ho com a pista, no com a fet. Un estudi sense projecte llistat vol dir que no vam trobar res publicat, no que no estigui passant res.<br><strong>Què hi ha en aquesta pàgina:</strong> només projectes actualment en concepció, disseny, construcció, acabats o a punt de triar mobiliari — les fases on BD encara pot entrar a l\'schedule. El que està lliurat o cancel·lat es retira i es conserva a l\'arxiu, no al tauler.'}
 };
 let LANG = 'en';
@@ -467,16 +467,26 @@ function render(){
     ? Object.keys(groups).sort((a,b) => a.localeCompare(b))
     : mode === 'region' ? REGIONS.filter(r => groups[r])
     : mode === 'spec' ? SPEC_KEYS.map(k => SPEC_LABEL[k]).filter(x => groups[x])
-    : STAGE_ORDER.filter(s => groups[s]);
+    : ['design','in construction','opening soon','opened']
+        .map(ph => PHASE_LABEL[ph])
+        .filter((v,i,arr) => arr.indexOf(v) === i)
+        .filter(k => groups[k]);
   document.getElementById('gstage').classList.toggle('on', mode === 'stage');
   document.getElementById('gregion').classList.toggle('on', mode === 'region');
   { const g = document.getElementById('gspec'); if (g) g.classList.toggle('on', mode === 'spec'); }
 
+  /* pestañas: "Todos" + una hoja por grupo (peticion de Valeria, 2-sep-2026) */
+  if (S.tab && !groups[S.tab]) S.tab = null;
   document.getElementById('index').innerHTML = keys.length
-    ? keys.map(k => `<a href="#g-${encodeURIComponent(k)}">${esc(k)}<span class="n">${groups[k].length}</span></a>`).join('')
+    ? `<a class="tab${!S.tab ? ' on' : ''}" data-tab="">${T('tab_all')}<span class="n">${rows.length}</span></a>` +
+      keys.map(k => `<a class="tab${S.tab === k ? ' on' : ''}" data-tab="${esc(k)}">${esc(k)}<span class="n">${groups[k].length}</span></a>`).join('')
     : '';
+  document.querySelectorAll('#index a').forEach(function(el){
+    el.onclick = function(ev){ ev.preventDefault(); S.tab = el.dataset.tab || null; render(); };
+  });
+  const shown = S.tab ? [S.tab] : keys;
   document.getElementById('out').innerHTML = keys.length
-    ? keys.map(k => `<h2 class="grouphead" id="g-${encodeURIComponent(k)}">${esc(k)}</h2>` +
+    ? shown.map(k => `<h2 class="grouphead" id="g-${encodeURIComponent(k)}">${esc(k)}</h2>` +
         groups[k].map(card).join('') + `<a class="top-link" href="#q">&uarr; Top</a>`).join('')
     : `<div class="empty">Nothing matches that filter.</div>`;
 }
@@ -533,6 +543,7 @@ function applyLang(){
   const sub = document.querySelector('.mast .sub'); if (sub) sub.textContent = T('sub');
   document.querySelectorAll('#langsw span').forEach(function(el){
     el.classList.toggle('on', el.dataset.lang === LANG); });
+  S.tab = null;
   buildStageChips();
   const dg = document.getElementById('dirgrid');
   const dt = document.getElementById('dirtoggle');
